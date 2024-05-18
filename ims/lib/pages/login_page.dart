@@ -74,6 +74,86 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // Reset password method
+  void resetPassword() async {
+    if (emailController.text.isEmpty) {
+      showEmptyEmailMessage();
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text,
+      );
+      showResetEmailSentMessage();
+    } on FirebaseAuthException catch (e) {
+      showResetEmailErrorMessage(e.message);
+    }
+  }
+
+  // Empty email message
+  void showEmptyEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Email Required'),
+          content: const Text('Please enter your email to reset password.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Reset email sent message
+  void showResetEmailSentMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Reset Email Sent'),
+          content: const Text('A password reset email has been sent to your email address.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Reset email error message
+  void showResetEmailErrorMessage(String? message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Reset Email Failed'),
+          content: Text(message ?? 'An error occurred while sending the reset email.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,9 +209,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Colors.grey[600]),
+                      GestureDetector(
+                        onTap: resetPassword,
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
                       ),
                     ],
                   ),
