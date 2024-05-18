@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "493264433529",
+    "project_id": "internship-management-sy-8ce13",
+    "storage_bucket": "internship-management-sy-8ce13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493264433529:android:283aabab945bac3b21bfa8",
+        "android_client_info": {
+          "package_name": "com.example.ims"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkRIj3RUNOpl6Jp46bu-FbitY2nvPdIaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
