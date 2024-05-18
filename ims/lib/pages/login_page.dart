@@ -5,20 +5,61 @@ import 'package:ims/components/my_button.dart';
 import 'package:ims/components/my_textfield.dart';
 import 'package:ims/components/square_tile.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   // text editing controllers
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
   // sign user in method
   void signUserIn() async{
+    //show loading scrren
+    showDialog(context: context, 
+    builder: (context)
+    {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+    );
+
+    //try sign in
+    try {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: emailController.text,
        password:  passwordController.text);
+    }on FirebaseAuthException catch(e){
+      
+      
+      
+      //wrong Email
+      if(e.code=="user-not-found"){
+        //wrongEmail
+        wrongEmailMessage();
+
+
+
+      }else if(e.code=='wrong-password'){
+       //wrongPassword
+       wrongEmailMessage();
+      }
+    }
+
+
+       //pop the loading circle
+       Navigator.pop(context);
   }
 
+void wrongEmailMessage(){
+  
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
