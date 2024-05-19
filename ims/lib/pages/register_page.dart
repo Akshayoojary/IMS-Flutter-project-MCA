@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ims/components/my_button.dart';
 import 'package:ims/components/my_textfield.dart';
-import 'package:ims/components/square_tile.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -135,133 +134,91 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 50),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 50),
 
-                // Logo icon
-                const Icon(
-                  Icons.person_add,
-                  size: 100,
-                ),
-
-                const SizedBox(height: 50),
-
-                // Create your account text
-                Text(
-                  'Create your account',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
+                  // Logo icon
+                  const Icon(
+                    Icons.person_add,
+                    size: 100,
                   ),
-                ),
 
-                const SizedBox(height: 25),
+                  const SizedBox(height: 50),
 
-                // Email textfield
-                MyTextField(
-                  controller: emailController,
-                  hintText: 'Email',
-                  obscureText: false,
-                ),
+                  // Create your account text
+                  Text(
+                    'Create your account',
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 25),
 
-                // Password textfield
-                MyTextField(
-                  controller: passwordController,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
+                  // Email textfield
+                  MyTextField(
+                    controller: emailController,
+                    hintText: 'Email',
+                    obscureText: false,
+                  ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 20), // Increased space between email field and password field
 
-                // Confirm Password textfield
-                MyTextField(
-                  controller: confirmPasswordController,
-                  hintText: 'Confirm Password',
-                  obscureText: true,
-                ),
+                  // Password textfield
+                  MyTextField(
+                    controller: passwordController,
+                    hintText: 'Password',
+                    obscureText: true,
+                  ),
 
-                const SizedBox(height: 25),
+                  const SizedBox(height: 20), // Increased space between password field and confirm password field
 
-                // Register button
-                MyButton(
-                  onTap: registerUser,
-                  text: 'Register',
-                ),
+                  // Confirm Password textfield
+                  MyTextField(
+                    controller: confirmPasswordController,
+                    hintText: 'Confirm Password',
+                    obscureText: true,
+                  ),
 
-                const SizedBox(height: 50),
+                  const SizedBox(height: 25),
 
-                // Or continue with section
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
+                  // Register button
+                  MyButton(
+                    onTap: registerUser,
+                    text: 'Register',
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // Already a member? Login now section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
+                      Text(
+                        'Already a member?',
+                        style: TextStyle(color: Colors.grey[700]),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or continue with',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: const Text(
+                          'Login now',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                ),
-
-                const SizedBox(height: 50),
-
-                // Google and Apple sign-in buttons
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Google button
-                    SquareTile(imagePath: 'lib/images/google.png'),
-
-                    SizedBox(width: 25),
-
-                    // Apple button
-                    SquareTile(imagePath: 'lib/images/apple.png')
-                  ],
-                ),
-
-                const SizedBox(height: 50),
-
-                // Already a member? Login now section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already a member?',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Text(
-                        'Login now',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
