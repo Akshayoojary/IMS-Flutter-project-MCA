@@ -1,25 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// ignore: unused_import
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ims/components/my_button.dart';
 import 'package:ims/components/my_textfield.dart';
 import 'package:ims/components/square_tile.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  LoginPage({super.key,required this.onTap});
+  RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  // text editing controllers
+class _RegisterPageState extends State<RegisterPage> {
+  // Text editing controllers for email, password, and confirm password fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  // sign user in method
-  void signUserIn() async {
+  // Method to register a user
+  void registerUser() async {
     // Show loading screen
     showDialog(
       context: context,
@@ -30,9 +32,25 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    // Try sign in
+    // Check if any field is empty
+    if (emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      Navigator.pop(context);
+      showEmptyFieldMessage();
+      return;
+    }
+
+    // Check if passwords match
+    if (passwordController.text != confirmPasswordController.text) {
+      Navigator.pop(context);
+      showPasswordMismatchMessage();
+      return;
+    }
+
+    // Try to register the user with Firebase Authentication
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -42,26 +60,19 @@ class _LoginPageState extends State<LoginPage> {
       // Pop the loading circle
       Navigator.pop(context);
 
-      // Show incorrect email or password message
-      showIncorrectEmailOrPasswordMessage();
+      // Show registration error message
+      showRegistrationErrorMessage(e.message);
     }
   }
 
-  // Incorrect email or password message
-  void showIncorrectEmailOrPasswordMessage() {
+  // Show message when any field is empty
+  void showEmptyFieldMessage() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Login Failed'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.error, color: Colors.red, size: 50),
-              SizedBox(height: 10),
-              Text('Incorrect email or password. Please try again.'),
-            ],
-          ),
+          title: const Text('Registration Failed'),
+          content: const Text('All fields are required. Please fill in all fields.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -75,31 +86,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Reset password method
-  void resetPassword() async {
-    if (emailController.text.isEmpty) {
-      showEmptyEmailMessage();
-      return;
-    }
-
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: emailController.text,
-      );
-      showResetEmailSentMessage();
-    } on FirebaseAuthException catch (e) {
-      showResetEmailErrorMessage(e.message);
-    }
-  }
-
-  // Empty email message
-  void showEmptyEmailMessage() {
+  // Show message when passwords do not match
+  void showPasswordMismatchMessage() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Email Required'),
-          content: const Text('Please enter your email to reset password.'),
+          title: const Text('Registration Failed'),
+          content: const Text('Passwords do not match. Please try again.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -113,35 +107,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Reset email sent message
-  void showResetEmailSentMessage() {
+  // Show registration error message
+  void showRegistrationErrorMessage(String? message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Reset Email Sent'),
-          content: const Text('A password reset email has been sent to your email address.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Reset email error message
-  void showResetEmailErrorMessage(String? message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Reset Email Failed'),
-          content: Text(message ?? 'An error occurred while sending the reset email.'),
+          title: const Text('Registration Failed'),
+          content: Text(message ?? 'An error occurred while registering.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -167,17 +140,17 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 50),
 
-                // logo
+                // Logo icon
                 const Icon(
-                  Icons.lock,
+                  Icons.person_add,
                   size: 100,
                 ),
 
                 const SizedBox(height: 50),
 
-                // welcome back, you've been missed!
+                // Create your account text
                 Text(
-                  'Welcome back you\'ve been missed!',
+                  'Create your account',
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontSize: 16,
@@ -204,34 +177,24 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 10),
 
-                // Forgot password?
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: resetPassword,
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ),
-                    ],
-                  ),
+                // Confirm Password textfield
+                MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: 'Confirm Password',
+                  obscureText: true,
                 ),
 
                 const SizedBox(height: 25),
 
-                // Sign in button
+                // Register button
                 MyButton(
-                  onTap: signUserIn, 
-                  text: 'Email',
+                  onTap: registerUser,
+                  text: 'Register',
                 ),
 
                 const SizedBox(height: 50),
 
-                // Or continue with
+                // Or continue with section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
@@ -261,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 50),
 
-                // Google + Apple sign in buttons
+                // Google and Apple sign-in buttons
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -277,27 +240,25 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 50),
 
-                // Not a member? Register now
+                // Already a member? Login now section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a member?',
+                      'Already a member?',
                       style: TextStyle(color: Colors.grey[700]),
                     ),
                     const SizedBox(width: 4),
-
-                      GestureDetector(
-                        onTap: widget.onTap,
-                        child: const Text(
-                        'Register now',
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        'Login now',
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
-                                            ),
                       ),
-                    
+                    ),
                   ],
                 )
               ],
