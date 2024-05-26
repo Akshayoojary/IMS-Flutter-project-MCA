@@ -1,27 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// ignore: unused_import
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ims/components/my_button.dart';
 import 'package:ims/components/my_textfield.dart';
+import 'package:email_validator/email_validator.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  RegisterPage({super.key, required this.onTap});
+  RegisterPage({Key? key, required this.onTap});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Text editing controllers for email, password, and confirm password fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  // Method to register a user
+  bool validateEmail(String email) {
+    return EmailValidator.validate(email);
+  }
+
+  bool validatePassword(String password) {
+    return password.length >= 6; // Minimum password length
+  }
+
   void registerUser() async {
-    // Show loading screen
     showDialog(
       context: context,
       builder: (context) {
@@ -31,7 +35,6 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
 
-    // Check if any field is empty
     if (emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
@@ -40,31 +43,36 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // Check if passwords match
+    if (!validateEmail(emailController.text)) {
+      Navigator.pop(context);
+      showInvalidEmailMessage();
+      return;
+    }
+
+    if (!validatePassword(passwordController.text)) {
+      Navigator.pop(context);
+      showInvalidPasswordMessage();
+      return;
+    }
+
     if (passwordController.text != confirmPasswordController.text) {
       Navigator.pop(context);
       showPasswordMismatchMessage();
       return;
     }
 
-    // Try to register the user with Firebase Authentication
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      // Pop the loading circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      // Pop the loading circle
       Navigator.pop(context);
-
-      // Show registration error message
-      showRegistrationErrorMessage(e.message);
+      showRegistrationErrorMessage(e.message ?? 'An error occurred while registering.');
     }
   }
 
-  // Show message when any field is empty
   void showEmptyFieldMessage() {
     showDialog(
       context: context,
@@ -85,7 +93,46 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Show message when passwords do not match
+  void showInvalidEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Registration Failed'),
+          content: const Text('Please enter a valid email address.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showInvalidPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Registration Failed'),
+          content: const Text('Password must be at least 6 characters long.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showPasswordMismatchMessage() {
     showDialog(
       context: context,
@@ -106,14 +153,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Show registration error message
-  void showRegistrationErrorMessage(String? message) {
+  void showRegistrationErrorMessage(String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Registration Failed'),
-          content: Text(message ?? 'An error occurred while registering.'),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
@@ -140,16 +186,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
-
-                  // Logo icon
                   const Icon(
                     Icons.person_add,
                     size: 100,
                   ),
-
                   const SizedBox(height: 50),
-
-                  // Create your account text
                   Text(
                     'Create your account',
                     style: TextStyle(
@@ -158,45 +199,30 @@ class _RegisterPageState extends State<RegisterPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 25),
-
-                  // Email textfield
                   MyTextField(
                     controller: emailController,
                     hintText: 'Email',
                     obscureText: false,
                   ),
-
-                  const SizedBox(height: 20), // Increased space between email field and password field
-
-                  // Password textfield
+                  const SizedBox(height: 20),
                   MyTextField(
                     controller: passwordController,
                     hintText: 'Password',
                     obscureText: true,
                   ),
-
-                  const SizedBox(height: 20), // Increased space between password field and confirm password field
-
-                  // Confirm Password textfield
+                  const SizedBox(height: 20),
                   MyTextField(
                     controller: confirmPasswordController,
                     hintText: 'Confirm Password',
                     obscureText: true,
                   ),
-
                   const SizedBox(height: 25),
-
-                  // Register button
                   MyButton(
                     onTap: registerUser,
                     text: 'Register',
                   ),
-
                   const SizedBox(height: 50),
-
-                  // Already a member? Login now section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

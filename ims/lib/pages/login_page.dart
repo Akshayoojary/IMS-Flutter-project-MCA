@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show AlertDialog, BuildContext, Center, CircularProgressIndicator, Colors, Column, EdgeInsets, FontWeight, GestureDetector, Icon, Icons, MainAxisAlignment, MainAxisSize, Navigator, Padding, Row, SafeArea, Scaffold, SingleChildScrollView, SizedBox, State, StatefulWidget, Text, TextAlign, TextButton, TextEditingController, TextStyle, Widget, showDialog;
 import 'package:ims/components/my_button.dart';
 import 'package:ims/components/my_textfield.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -15,8 +16,36 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Function to validate email
+  bool validateEmail(String email) {
+    return EmailValidator.validate(email);
+  }
+
   // Function to sign in the user with email and password
   void signUserIn() async {
+    // Validate email
+    if (!validateEmail(emailController.text)) {
+      // Show error dialog if email is invalid
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Invalid Email'),
+            content: const Text('Please enter a valid email address.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     // Show a loading dialog
     showDialog(
       context: context,
@@ -166,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                   // "Forgot Password?" link
                   GestureDetector(
                     onTap: handleForgotPassword,
-                    child: Text(
+                    child: const Text(
                       'Forgot Password?',
                       style: TextStyle(color: Colors.blue),
                     ),

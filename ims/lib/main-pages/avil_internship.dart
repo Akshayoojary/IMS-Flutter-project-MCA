@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ims/main-pages/internship_detail_page.dart';
 
 class AvilInternshipPage extends StatelessWidget {
-  const AvilInternshipPage({Key? key}) : super(key: key);
+  const AvilInternshipPage({super.key});
+
+  void _navigateToDetail(BuildContext context, String title, String description, String type, String location) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InternshipDetailPage(
+          title: title,
+          description: description,
+          type: type,
+          location: location,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +36,7 @@ class AvilInternshipPage extends StatelessWidget {
           SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
-              itemCount: 4, // Replace with your actual count
+              itemCount: 4,
               itemBuilder: (context, index) {
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 10),
@@ -44,6 +59,15 @@ class AvilInternshipPage extends StatelessWidget {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      _navigateToDetail(
+                        context,
+                        'Software Engineering Intern',
+                        'Join our team to build innovative software solutions.',
+                        'Full Time',
+                        'Remote',
+                      );
+                    },
                   ),
                 );
               },

@@ -1,40 +1,32 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class ImagePickerWidget extends StatefulWidget {
+class ImagePickerWidget extends StatelessWidget {
   final Function(File) onImagePicked;
 
-  const ImagePickerWidget({required this.onImagePicked, Key? key}) : super(key: key);
+  const ImagePickerWidget({Key? key, required this.onImagePicked}) : super(key: key);
 
-  @override
-  _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
-}
-
-class _ImagePickerWidgetState extends State<ImagePickerWidget> {
-  final ImagePicker _picker = ImagePicker();
-  File? _image;
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-      widget.onImagePicked(_image!);
+      onImagePicked(File(pickedFile.path));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _image != null
-            ? Image.file(_image!, width: 100, height: 100, fit: BoxFit.cover)
-            : const Text("No image selected"),
         ElevatedButton(
-          onPressed: _pickImage,
-          child: const Text("Pick Image"),
+          onPressed: () => _pickImage(ImageSource.camera),
+          child: Text('Camera'),
+        ),
+        SizedBox(width: 10),
+        ElevatedButton(
+          onPressed: () => _pickImage(ImageSource.gallery),
+          child: Text('Gallery'),
         ),
       ],
     );

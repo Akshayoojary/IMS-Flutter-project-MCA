@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ims/main-pages/profil_page.dart';  // Ensure correct import path
+import 'package:ims/main-pages/avil_internship.dart';  // Ensure correct import path
 import 'package:ims/components/top_app_bar.dart';
 import 'package:ims/pages/auth_page.dart';  // Import the modified TopAppBar widget
 
@@ -13,10 +14,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  List<Widget> _pages = [
+  final List<Widget> _pages = [
     Center(child: Text('Home')),
     Center(child: Text('Jobs')),
-    Center(child: Text('Internships')),
+    AvilInternshipPage(),  // Use the AvailInternship page here
     const ProfilePage(),  // Use the ProfilePage here
   ];
 
