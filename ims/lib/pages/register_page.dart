@@ -16,6 +16,22 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool _isMounted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isMounted = true;
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   bool validateEmail(String email) {
     return EmailValidator.validate(email);
@@ -38,26 +54,34 @@ class _RegisterPageState extends State<RegisterPage> {
     if (emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      Navigator.pop(context);
-      showEmptyFieldMessage();
+      if (_isMounted) {
+        Navigator.pop(context);
+        showEmptyFieldMessage();
+      }
       return;
     }
 
     if (!validateEmail(emailController.text)) {
-      Navigator.pop(context);
-      showInvalidEmailMessage();
+      if (_isMounted) {
+        Navigator.pop(context);
+        showInvalidEmailMessage();
+      }
       return;
     }
 
     if (!validatePassword(passwordController.text)) {
-      Navigator.pop(context);
-      showInvalidPasswordMessage();
+      if (_isMounted) {
+        Navigator.pop(context);
+        showInvalidPasswordMessage();
+      }
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      Navigator.pop(context);
-      showPasswordMismatchMessage();
+      if (_isMounted) {
+        Navigator.pop(context);
+        showPasswordMismatchMessage();
+      }
       return;
     }
 
@@ -66,10 +90,14 @@ class _RegisterPageState extends State<RegisterPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.pop(context);
+      if (_isMounted) {
+        Navigator.pop(context);
+      }
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      showRegistrationErrorMessage(e.message ?? 'An error occurred while registering.');
+      if (_isMounted) {
+        Navigator.pop(context);
+        showRegistrationErrorMessage(e.message ?? 'An error occurred while registering.');
+      }
     }
   }
 

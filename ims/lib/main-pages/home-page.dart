@@ -4,9 +4,10 @@ import 'package:ims/main-pages/profil_page.dart';  // Ensure correct import path
 import 'package:ims/main-pages/avil_internship.dart';  // Ensure correct import path
 import 'package:ims/components/top_app_bar.dart';
 import 'package:ims/pages/auth_page.dart';  // Import the modified TopAppBar widget
+import 'package:ims/main-pages/intern_dashboard.dart';  // Import the InternDashboard page
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,20 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Widget> _pages = [
-    Center(child: Text('Home')),
-    Center(child: Text('Jobs')),
-    AvilInternshipPage(),  // Use the AvailInternship page here
-    const ProfilePage(),  // Use the ProfilePage here
-  ];
-
-  // Method to handle logout
-  void _logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const AuthPage())
-    );
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,8 +22,48 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const AuthPage())
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Welcome to Niozn Technologies',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const InternDashboard()),
+                );
+              },
+              icon: Icon(Icons.arrow_forward),
+              label: Text('Get Started'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Center(child: Text('Jobs')),
+      AvilInternshipPage(),  // Use the AvailInternship page here
+      const ProfilePage(),  // Use the ProfilePage here
+    ];
+
     return Scaffold(
       appBar: TopAppBar(
         title: 'IMS',
