@@ -1,40 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:ims/Admin-pages/Pages/AttendanceAdminPage.dart';
+import 'package:ims/Admin-pages/Pages/TaskAdminPage.dart';
+import 'package:ims/Admin-pages/Pages/DocumentAdminPage.dart';
+import 'package:ims/Admin-pages/Pages/ResourceAdminPage.dart';
+import 'package:ims/Admin-pages/Pages/JobAdmin.dart';
+import 'package:ims/Admin-pages/Pages/InternshipAdmin.dart';
+import 'package:ims/components/top_app_bar.dart'; // Assuming you have this
 import 'package:ims/main-pages/home-page.dart';
-import 'package:ims/components/top_app_bar.dart';
 import 'package:ims/main-pages/profil_page.dart';
 import 'package:ims/main-pages/avil_internship.dart';
-import 'package:ims/Dash-board-pages/attendance.dart';
-import 'package:ims/Dash-board-pages/document.dart';
-import 'package:ims/Dash-board-pages/resource.dart';
-import 'package:ims/Dash-board-pages/task.dart';
 
-class InternDashboard extends StatefulWidget {
-  const InternDashboard({Key? key}) : super(key: key);
+class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({super.key});
 
   @override
-  _InternDashboardState createState() => _InternDashboardState();
+  _AdminDashboardState createState() => _AdminDashboardState();
 }
 
-class _InternDashboardState extends State<InternDashboard> {
-  int _selectedIndex = 2; // Set the initial index to 2 for the "Internship" page
-
-  static const List<Widget> _pages = <Widget>[
-    HomePage(),
-    Center(child: Text('Jobs')), // Replace with actual Jobs page
-    AvilInternshipPage(),
-    ProfilePage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => _pages[index]),
-    );
-  }
-
+class _AdminDashboardState extends State<AdminDashboard> {
   void _navigateToPage(Widget page) {
     Navigator.push(
       context,
@@ -46,7 +29,7 @@ class _InternDashboardState extends State<InternDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopAppBar(
-        title: 'Intern Dashboard',
+        title: 'Admin Dashboard',
         isLoggedIn: true, // Assuming the user is logged in
         onLogout: () {
           // Handle logout logic
@@ -63,52 +46,40 @@ class _InternDashboardState extends State<InternDashboard> {
               icon: Icons.check_circle,
               label: 'Attendance',
               color: Colors.blue,
-              onTap: () => _navigateToPage(AttendancePage()),
+              onTap: () => _navigateToPage(AttendanceAdminPage()),
             ),
             DashboardOption(
               icon: Icons.task,
               label: 'Task',
               color: Colors.green,
-              onTap: () => _navigateToPage(TaskPage()),
+              onTap: () => _navigateToPage(TaskAdminPage()),
             ),
             DashboardOption(
               icon: Icons.document_scanner,
               label: 'Document',
               color: Colors.orange,
-              onTap: () => _navigateToPage(DocumentPage()),
+              onTap: () => _navigateToPage(DocumentAdminPage()),
             ),
             DashboardOption(
               icon: Icons.book,
               label: 'Resources',
               color: Colors.purple,
-              onTap: () => _navigateToPage(ResourcePage()),
+              onTap: () => _navigateToPage(ResourceAdminPage()),
+            ),
+            DashboardOption(
+              icon: Icons.business_center,
+              label: 'Jobs',
+              color: Colors.red,
+              onTap: () => _navigateToPage(JobAdminPage()),
+            ),
+            DashboardOption(
+              icon: Icons.work,
+              label: 'Internships',
+              color: Colors.teal,
+              onTap: () => _navigateToPage(InternshipAdminPage()),
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business_center),
-            label: 'Jobs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.work),
-            label: 'Internships',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
       ),
     );
   }
