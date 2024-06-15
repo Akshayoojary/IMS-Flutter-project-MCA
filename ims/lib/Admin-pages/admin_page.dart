@@ -5,10 +5,9 @@ import 'package:ims/Admin-pages/Pages/DocumentAdminPage.dart';
 import 'package:ims/Admin-pages/Pages/ResourceAdminPage.dart';
 import 'package:ims/Admin-pages/Pages/JobAdmin.dart';
 import 'package:ims/Admin-pages/Pages/InternshipAdmin.dart';
+import 'package:ims/Admin-pages/Pages/ApplicationsAdminPage.dart'; // Import the ApplicationsAdminPage
+import 'package:ims/Admin-pages/Pages/ApplicationsAdminPage.dart';
 import 'package:ims/components/top_app_bar.dart'; // Assuming you have this
-import 'package:ims/main-pages/home-page.dart';
-import 'package:ims/main-pages/profil_page.dart';
-import 'package:ims/main-pages/avil_internship.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -77,6 +76,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
               label: 'Internships',
               color: Colors.teal,
               onTap: () => _navigateToPage(InternshipAdminPage()),
+            ),
+            DashboardOption(
+              icon: Icons.assignment,
+              label: 'Applications',
+              color: Colors.blueGrey,
+              onTap: () => _navigateToPage(ApplicationsAdminPage()),
             ),
           ],
         ),

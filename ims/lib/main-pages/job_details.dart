@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class InternshipDetailPage extends StatelessWidget {
+class JobDetailPage extends StatelessWidget {
   final String title;
   final String description;
   final String type;
   final String location;
 
-  const InternshipDetailPage({
-    super.key,
+  const JobDetailPage({
+    Key? key,
     required this.title,
     required this.description,
     required this.type,
     required this.location,
-  });
+  }) : super(key: key);
 
-  Future<void> _applyForInternship(BuildContext context) async {
+  Future<void> _applyForJob(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,14 +38,14 @@ class InternshipDetailPage extends StatelessWidget {
       'userId': user.uid,
       'userName': userProfile['name'],
       'userEmail': user.email,
-      'internshipTitle': title,
-      'internshipDescription': description,
-      'internshipType': type,
-      'internshipLocation': location,
+      'jobTitle': title,
+      'jobDescription': description,
+      'jobType': type,
+      'jobLocation': location,
       'appliedAt': Timestamp.now(),
     };
 
-    await FirebaseFirestore.instance.collection('internship_applications').add(applicationData);
+    await FirebaseFirestore.instance.collection('job_applications').add(applicationData);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Application submitted successfully.')),
@@ -82,7 +82,7 @@ class InternshipDetailPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => _applyForInternship(context),
+              onPressed: () => _applyForJob(context),
               child: Text('Apply Now'),
             ),
           ],

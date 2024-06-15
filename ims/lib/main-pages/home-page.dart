@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ims/main-pages/profil_page.dart';  // Ensure correct import path
-import 'package:ims/main-pages/avil_internship.dart';  // Ensure correct import path
+import 'package:ims/main-pages/profil_page.dart';
+import 'package:ims/main-pages/avil_internship.dart';
+import 'package:ims/main-pages/avail_jobs.dart'; // Updated import for jobs page
 import 'package:ims/components/top_app_bar.dart';
-import 'package:ims/pages/auth_page.dart';  // Import the modified TopAppBar widget
-import 'package:ims/main-pages/intern_dashboard.dart';  // Import the InternDashboard page
+import 'package:ims/pages/auth_page.dart';
+import 'package:ims/main-pages/intern_dashboard.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,12 +21,34 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
+
+    // Navigate to specific page based on index
+    switch (index) {
+      case 0:
+        // Home Page
+        break;
+      case 1:
+        // Jobs Page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AvailJobsPage()),
+        );
+        break;
+      case 2:
+        // Internships Page
+        break;
+      case 3:
+        // Profile Page
+        break;
+      default:
+        break;
+    }
   }
 
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const AuthPage())
+      MaterialPageRoute(builder: (context) => const AuthPage()),
     );
   }
 
@@ -59,16 +82,16 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      Center(child: Text('Jobs')),
-      AvilInternshipPage(),  // Use the AvailInternship page here
-      const ProfilePage(),  // Use the ProfilePage here
+      AvailJobsPage(), // Jobs Page
+      AvilInternshipPage(),
+      const ProfilePage(),
     ];
 
     return Scaffold(
       appBar: TopAppBar(
         title: 'IMS',
-        isLoggedIn: true, // The user is assumed to be logged in if this page is reached
-        onLogout: _logout, // Pass the logout function to the TopAppBar
+        isLoggedIn: true,
+        onLogout: _logout,
       ),
       drawer: Drawer(
         child: ListView(
