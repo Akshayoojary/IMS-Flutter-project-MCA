@@ -14,6 +14,8 @@ class _InternshipAdminPageState extends State<InternshipAdminPage> {
   final TextEditingController typeController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
 
+  bool _isAdding = false;
+
   void _saveInternship() {
     final internshipData = {
       'title': titleController.text,
@@ -36,6 +38,9 @@ class _InternshipAdminPageState extends State<InternshipAdminPage> {
     descriptionController.clear();
     typeController.clear();
     locationController.clear();
+    setState(() {
+      _isAdding = false;
+    });
   }
 
   void _deleteInternship(String id) {
@@ -108,43 +113,48 @@ class _InternshipAdminPageState extends State<InternshipAdminPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
+            if (_isAdding)
+              Column(
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: typeController,
+                    decoration: InputDecoration(
+                      labelText: 'Type',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: locationController,
+                    decoration: InputDecoration(
+                      labelText: 'Location',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _saveInternship,
+                    child: Text('Save Internship'),
+                  ),
+                  SizedBox(height: 20),
+                ],
               ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: typeController,
-              decoration: InputDecoration(
-                labelText: 'Type',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: locationController,
-              decoration: InputDecoration(
-                labelText: 'Location',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveInternship,
-              child: Text('Save Internship'),
-            ),
-            SizedBox(height: 20),
             Expanded(
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance.collection('internships').snapshots(),
@@ -204,47 +214,14 @@ class _InternshipAdminPageState extends State<InternshipAdminPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _clearForm();
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Add Internship'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(labelText: 'Title'),
-                    ),
-                    TextField(
-                      controller: descriptionController,
-                      decoration: InputDecoration(labelText: 'Description'),
-                    ),
-                    TextField(
-                      controller: typeController,
-                      decoration: InputDecoration(labelText: 'Type'),
-                    ),
-                    TextField(
-                      controller: locationController,
-                      decoration: InputDecoration(labelText: 'Location'),
-                    ),
-                  ],
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      _saveInternship();
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Save'),
-                  ),
-                ],
-              );
-            },
-          );
+          setState(() {
+            _isAdding = !_isAdding;
+            if (!_isAdding) {
+              _clearForm();
+            }
+          });
         },
-        child: Icon(Icons.add),
+        child: Icon(_isAdding ? Icons.close : Icons.add),
       ),
     );
   }

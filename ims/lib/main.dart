@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:ims/Admin-pages/admin_page.dart';
+//import 'package:ims/Admin-pages/admin_page.dart';
 import 'package:ims/main-pages/home-page.dart';
+import 'package:ims/pages/auth_page.dart';
 import 'firebase_options.dart';
 //import 'package:ims/pages/auth_page.dart';
 
@@ -20,10 +21,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  AdminDashboard (),
-      routes: {
-        '/home': (context) => const HomePage(),
-      },
+      home: AuthPage()    //  AdminDashboard (),
+      //routes: {
+      //   '/home': (context) => const HomePage(),
+      // },
     );
   }
 }
